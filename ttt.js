@@ -8,13 +8,19 @@ const rl = readline.createInterface({
 
 var array = [];
 var gridBy = 0;
+var turn = 0;
+var maxTurns = 0;
+var p1 = "";
+var p2 = "";
 
 rl.question("Player 1 please enter your name: ", function(player1) {
     rl.question("Player 2 please enter your name: ", function(player2) {
         rl.question("Choose a number from 3-9: ", function(number) {
+        giveNames(player1, player2);
         console.log(`${player1} you will be using the 'x'\n${player2} you will be using the 'o'\n`);
         console.log(`Your tic tac toe grid will be a ${number} by ${number}`);
         gridBy = parseInt(number, 10);
+        maxTurns = gridBy * gridBy;
         populateArray(gridBy);
         console.log(gridConstructor(gridBy));
         playerOneTurn();
@@ -22,13 +28,40 @@ rl.question("Player 1 please enter your name: ", function(player1) {
     });
 });
 
+function giveNames(name1, name2) {
+    p1 = name1;
+    p2 = name2;
+}
+
 function playerOneTurn() {
-    rl.question("Player 1 please pick a position: ", function(position) {
+    if (turn == maxTurns) {
+        turnsOver();
+    }
+    rl.question(p1 + " please pick a position: ", function(position) {
         var xPos = parseInt(position, 10) - 1;
         array[xPos] = " x";
         console.log(gridConstructor(gridBy));
-        rl.close();
+        turn ++;
+        playerTwoTurn();
     });
+}
+
+function playerTwoTurn() {
+    if (turn == maxTurns) {
+        turnsOver();
+    }
+    rl.question(p2 + " please pick a position: ", function(position) {
+        var oPos = parseInt(position, 10) - 1;
+        array[oPos] = " o";
+        console.log(gridConstructor(gridBy));
+        turn ++;
+        playerOneTurn();
+    });
+}
+
+function turnsOver() {
+    console.log("All turns used up, game over!");
+    rl.close();
 }
 
 function populateArray(number) {
