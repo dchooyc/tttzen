@@ -18,7 +18,6 @@ function main(){
     receiveNames();
 }
 
-
 function receiveNames() {
     rl.question("Player 1 please enter your name: ", function(player1) {
         rl.question("Player 2 please enter your name: ", function(player2) {
@@ -32,7 +31,7 @@ function receiveNames() {
 
 function receiveNumber() {
     rl.question("Choose a number from 3-9: ", function(number) {
-        console.log(`Your tic tac toe grid will be a ${number} by ${number}`);
+        console.log("Your tic tac toe grid will be a " + number + " by " + number);
         gridBy = parseInt(number, 10);
         maxTurns = gridBy * gridBy;
         populateArray(gridBy);
