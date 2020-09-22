@@ -1,5 +1,3 @@
-console.log("Hello this is a tic tac toe game\n");
-
 const readline = require("readline");
 const rl = readline.createInterface({
     input: process.stdin,
@@ -13,24 +11,34 @@ var maxTurns = 0;
 var p1 = "";
 var p2 = "";
 
-rl.question("Player 1 please enter your name: ", function(player1) {
-    rl.question("Player 2 please enter your name: ", function(player2) {
-        rl.question("Choose a number from 3-9: ", function(number) {
-        giveNames(player1, player2);
-        console.log(`${player1} you will be using the 'x'\n${player2} you will be using the 'o'\n`);
+main();
+
+function main(){
+    console.log("Hello this is a tic tac toe game\n");
+    receiveNames();
+}
+
+
+function receiveNames() {
+    rl.question("Player 1 please enter your name: ", function(player1) {
+        rl.question("Player 2 please enter your name: ", function(player2) {
+            p1 = player1;
+            p2 = player2;
+            console.log(`${player1} you will be using the 'x'\n${player2} you will be using the 'o'\n`);
+            receiveNumber();
+        });
+    });
+}
+
+function receiveNumber() {
+    rl.question("Choose a number from 3-9: ", function(number) {
         console.log(`Your tic tac toe grid will be a ${number} by ${number}`);
         gridBy = parseInt(number, 10);
         maxTurns = gridBy * gridBy;
         populateArray(gridBy);
         console.log(gridConstructor(gridBy));
         playerOneTurn();
-        });
     });
-});
-
-function giveNames(name1, name2) {
-    p1 = name1;
-    p2 = name2;
 }
 
 function playerOneTurn() {
