@@ -42,22 +42,37 @@ function receiveNumber() {
     });
 }
 
-// function updateCheckArray(position, piece) {
+//Give each column a number from 1-n
+function updateColumnCheckArray(position) {
+    //Position%gridby will give you 1,...,n-1 then 0
+    var c = position % gridBy;
+    //I make it such that its 1-n
+    if (c == 0) {
+        c = gridBy;
+    }
+    return c;
+}
 
+function updateCheckArray(position, piece) {
+    var row = Math.ceil(position/gridBy) - 1;
+    var column = updateColumnCheckArray(position) -1;
 
-// }
+    checkArray[row][column] = piece;
+}
 
 function playerOneTurn() {
     if (turn == maxTurns) {
         turnsOver();
     }
     rl.question(p1 + " please pick a position: ", function(position) {
-        var xPos = parseInt(position, 10) - 1;
+        var xPos = parseInt(position, 10);
         var text = "";
         if (gridBy > 9) {
             text += " ";
         }
-        array[xPos] = text + " x";
+        array[xPos-1] = text + " x";
+        updateCheckArray(xPos, "x");
+        console.log(checkArray);
         console.log(gridConstructor(gridBy));
         turn ++;
         playerTwoTurn();
@@ -69,12 +84,14 @@ function playerTwoTurn() {
         turnsOver();
     }
     rl.question(p2 + " please pick a position: ", function(position) {
-        var oPos = parseInt(position, 10) - 1;
+        var oPos = parseInt(position, 10);
         var text = "";
         if (gridBy > 9) {
             text += " ";
         }
-        array[oPos] = text + " o";
+        array[oPos-1] = text + " o";
+        updateCheckArray(oPos, "o");
+        console.log(checkArray);
         console.log(gridConstructor(gridBy));
         turn ++;
         playerOneTurn();
