@@ -180,7 +180,8 @@ function win(player) {
 function checkWin(player) {
     checkHorizontalWin(player, checkArray);
     checkVerticalWin(player);
-    checkDiagonalWin(player);
+    checkDiagonalWin(player, checkArray);
+    checkOtherDiagonalWin(player);
     if (turn == maxTurns) {
         console.log("Game over, all positions filled!");
         rl.close();
@@ -223,7 +224,7 @@ function checkVerticalWin(player) {
     checkHorizontalWin(player, cvwArray);
 }
 
-function checkDiagonalWin(player) {
+function checkDiagonalWin(player, array) {
     var cdwArray = [];
     var newArray = [];
     var superString = "";
@@ -232,7 +233,7 @@ function checkDiagonalWin(player) {
     for (let i = 0; i < gridBy; i++) {
         var tempArray = [];
         for (let j = 0; j <= i; j++) {
-            tempArray.push(checkArray[j][i-j]);
+            tempArray.push(array[j][i-j]);
         }
         cdwArray.push(tempArray);
     }
@@ -240,7 +241,7 @@ function checkDiagonalWin(player) {
         var tempArray = [];
         let k = i;
         for (let j = gridBy-1; j >= i; j--) {
-            tempArray.push(checkArray[k][j]);
+            tempArray.push(array[k][j]);
             k++;
         }
         cdwArray.push(tempArray);
@@ -255,4 +256,17 @@ function checkDiagonalWin(player) {
     if (regularExp) {
         win(player);
     }
+}
+
+function checkOtherDiagonalWin(player) {
+    var codwArray = [];
+
+    for (let i = 0; i < gridBy; i++) {
+        var tempArray = [];
+        for (let j = gridBy; j > 0; j--) {
+            tempArray.push(checkArray[j-1][i]);
+        }
+        codwArray.push(tempArray);
+    }
+    checkDiagonalWin(player, codwArray);
 }
