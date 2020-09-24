@@ -61,7 +61,7 @@ function useNumber(number) {
 }
 
 //Give each column a number from 1-n
-function updateColumnCheckArray(position) {
+function findColumnCheckArray(position) {
     //Position%gridby will give you 1,...,n-1 then 0
     var c = position % gridBy;
     //I make it such that its 1-n
@@ -71,11 +71,20 @@ function updateColumnCheckArray(position) {
     return c;
 }
 
+//Find the position in checkArray and change it to the piece
 function updateCheckArray(position, piece) {
     var row = Math.ceil(position/gridBy) - 1;
-    var column = updateColumnCheckArray(position) -1;
+    var column = findColumnCheckArray(position) -1;
 
     checkArray[row][column] = piece;
+}
+
+//Check if the position in checkArray already has a piece
+function testCheckArray(position) {
+    var row = Math.ceil(position/gridBy) - 1;
+    var column = findColumnCheckArray(position) -1;
+
+    return (checkArray[row][column] == "x" || checkArray[row][column] == "o");
 }
 
 //Testing if position is valid
@@ -88,6 +97,9 @@ function testPosition(position, turnAgain, usePosition) {
         turnAgain();
     } else if (position > maxTurns) {
         console.log("Please pick a valid position!");
+        turnAgain();
+    } else if (testCheckArray(position)) {
+        console.log("That position has already been taken!");
         turnAgain();
     } else {
         usePosition(position);
