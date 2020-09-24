@@ -178,21 +178,22 @@ function win(player) {
 }
 
 function checkWin(player) {
-    checkHorizontalWin(player);
+    checkHorizontalWin(player, checkArray);
+    checkVerticalWin(player);
     if (turn == maxTurns) {
         console.log("Game over, all positions filled!");
         rl.close();
     }
 }
 
-function checkHorizontalWin(player) {
+function checkHorizontalWin(player, array) {
     var chwArray = [];
     var superString = "";
     var regularExp = false;
 
     //First I combine each array into a string
-    for (i = 0; i < gridBy; i++) {
-        var tempArray = checkArray[i].join("");
+    for (let i = 0; i < gridBy; i++) {
+        var tempArray = array[i].join("");
         chwArray.push(tempArray);
     }
 
@@ -204,4 +205,19 @@ function checkHorizontalWin(player) {
     if (regularExp) {
         win(player);
     }
+}
+
+//Preparing an array for checkHorizontalWin to do the same thing
+function checkVerticalWin(player) {
+    var cvwArray = [];
+
+    for (let i = 0; i < gridBy; i++) {
+        var tempArray = [];
+        //Push each element from the i position in each array into tempArray
+        for (let j = 0; j < gridBy; j++) {
+            tempArray.push(checkArray[j][i]);
+        }
+        cvwArray.push(tempArray);
+    }
+    checkHorizontalWin(player, cvwArray);
 }
