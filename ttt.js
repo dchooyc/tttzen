@@ -180,6 +180,7 @@ function win(player) {
 function checkWin(player) {
     checkHorizontalWin(player, checkArray);
     checkVerticalWin(player);
+    checkDiagonalWin(player);
     if (turn == maxTurns) {
         console.log("Game over, all positions filled!");
         rl.close();
@@ -220,4 +221,38 @@ function checkVerticalWin(player) {
         cvwArray.push(tempArray);
     }
     checkHorizontalWin(player, cvwArray);
+}
+
+function checkDiagonalWin(player) {
+    var cdwArray = [];
+    var newArray = [];
+    var superString = "";
+    var regularExp = false;
+
+    for (let i = 0; i < gridBy; i++) {
+        var tempArray = [];
+        for (let j = 0; j <= i; j++) {
+            tempArray.push(checkArray[j][i-j]);
+        }
+        cdwArray.push(tempArray);
+    }
+    for (let i = 1; i < gridBy; i ++) {
+        var tempArray = [];
+        let k = i;
+        for (let j = gridBy-1; j >= i; j--) {
+            tempArray.push(checkArray[k][j]);
+            k++;
+        }
+        cdwArray.push(tempArray);
+    }
+    for (let i = 0; i < cdwArray.length; i ++) {
+        var tempArray = cdwArray[i].join("");
+        newArray.push(tempArray);
+    }
+    superString = newArray.join("n");
+    regularExp = /(x{3,3})|(o{3,3})/.test(superString);
+
+    if (regularExp) {
+        win(player);
+    }
 }
