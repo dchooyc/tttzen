@@ -61,9 +61,8 @@ function updateCheckArray(position, piece) {
 }
 
 function playerOneTurn() {
-    if (turn == maxTurns) {
-        turnsOver();
-    }
+    //Testing here if previous player has already won
+    checkWin(p2);
     rl.question(p1 + " please pick a position: ", function(position) {
         var xPos = parseInt(position, 10);
         var text = "";
@@ -72,7 +71,6 @@ function playerOneTurn() {
         }
         array[xPos-1] = text + " x";
         updateCheckArray(xPos, "x");
-        console.log(checkArray);
         console.log(gridConstructor(gridBy));
         turn ++;
         playerTwoTurn();
@@ -80,9 +78,7 @@ function playerOneTurn() {
 }
 
 function playerTwoTurn() {
-    if (turn == maxTurns) {
-        turnsOver();
-    }
+    checkWin(p1);
     rl.question(p2 + " please pick a position: ", function(position) {
         var oPos = parseInt(position, 10);
         var text = "";
@@ -91,7 +87,6 @@ function playerTwoTurn() {
         }
         array[oPos-1] = text + " o";
         updateCheckArray(oPos, "o");
-        console.log(checkArray);
         console.log(gridConstructor(gridBy));
         turn ++;
         playerOneTurn();
@@ -176,3 +171,37 @@ function gridConstructor(number) {
 rl.on("close", function() {
     process.exit(0);
 });
+
+function win(player) {
+    console.log(player + " has won the game!");
+    rl.close();
+}
+
+function checkWin(player) {
+    checkHorizontalWin(player);
+    if (turn == maxTurns) {
+        console.log("Game over, all positions filled!");
+        rl.close();
+    }
+}
+
+function checkHorizontalWin(player) {
+    var chwArray = [];
+    var superString = "";
+    var regularExp = false;
+
+    //First I combine each array into a string
+    for (i = 0; i < gridBy; i++) {
+        var tempArray = checkArray[i].join("");
+        chwArray.push(tempArray);
+    }
+
+    //Then all the arrays are converted into a string seperated by n
+    //Then tested as a regular expression for a consecutive x or o
+    superString = chwArray.join("n");
+    regularExp = /(x{3,3})|(o{3,3})/.test(superString);
+
+    if (regularExp) {
+        win(player);
+    }
+}
