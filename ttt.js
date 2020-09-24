@@ -32,14 +32,32 @@ function receiveNames() {
 
 function receiveNumber() {
     rl.question("Choose a number from 3-25: ", function(number) {
-        console.log("Your tic tac toe grid will be a " + number + " by " + number);
-        gridBy = parseInt(number, 10);
-        maxTurns = gridBy * gridBy;
-        populateArray(gridBy);
-        populateCheckArray(gridBy);
-        console.log(gridConstructor(gridBy));
-        playerOneTurn();
+        checkNumber(number);
     });
+}
+
+//Checks for proper input for grid size
+//Grid can go more than 25 depending on screen size
+function checkNumber(number) {
+    if (isNaN(number)) {
+        console.log("Please enter a number!!");
+        receiveNumber();
+    } else if (number < 3) {
+        console.log("Please pick a number larger than 3!!!");
+        receiveNumber();
+    } else {
+    useNumber(number);
+    }
+}
+
+function useNumber(number) {
+    console.log("Your tic tac toe grid will be a " + number + " by " + number);
+    gridBy = parseInt(number, 10);
+    maxTurns = gridBy * gridBy;
+    populateArray(gridBy);
+    populateCheckArray(gridBy);
+    console.log(gridConstructor(gridBy));
+    playerOneTurn();
 }
 
 //Give each column a number from 1-n
@@ -60,44 +78,64 @@ function updateCheckArray(position, piece) {
     checkArray[row][column] = piece;
 }
 
+//Testing if position is valid
+function testPosition(position, turnAgain, usePosition) {
+    if (isNaN(position)) {
+        console.log("Please enter a number!!");
+        turnAgain();
+    } else if (position < 1) {
+        console.log("Please pick a valid position!");
+        turnAgain();
+    } else if (position > maxTurns) {
+        console.log("Please pick a valid position!");
+        turnAgain();
+    } else {
+        usePosition(position);
+    }
+}
+
 function playerOneTurn() {
     //Testing here if previous player has already won
     checkWin(p2);
     rl.question(p1 + " please pick a position: ", function(position) {
-        var xPos = parseInt(position, 10);
-        var text = "";
-        if (gridBy > 9) {
-            text += " ";
-        }
-        array[xPos-1] = text + " x";
-        updateCheckArray(xPos, "x");
-        console.log(gridConstructor(gridBy));
-        turn ++;
-        playerTwoTurn();
+        testPosition(position, playerOneTurn, playerOneUsePosition);
     });
+}
+
+function playerOneUsePosition(position) {
+    var xPos = parseInt(position, 10);
+    var text = "";
+    if (gridBy > 9) {
+        text += " ";
+    }
+    array[xPos-1] = text + " x";
+    updateCheckArray(xPos, "x");
+    console.log(gridConstructor(gridBy));
+    turn ++;
+    playerTwoTurn();
 }
 
 function playerTwoTurn() {
     checkWin(p1);
     rl.question(p2 + " please pick a position: ", function(position) {
-        var oPos = parseInt(position, 10);
-        var text = "";
-        if (gridBy > 9) {
-            text += " ";
-        }
-        array[oPos-1] = text + " o";
-        updateCheckArray(oPos, "o");
-        console.log(gridConstructor(gridBy));
-        turn ++;
-        playerOneTurn();
+        testPosition(position, playerTwoTurn, playerTwoUsePosition);
     });
 }
 
-function turnsOver() {
-    console.log("All turns used up, game over!");
-    rl.close();
+function playerTwoUsePosition(position) {
+    var oPos = parseInt(position, 10);
+    var text = "";
+    if (gridBy > 9) {
+        text += " ";
+    }
+    array[oPos-1] = text + " o";
+    updateCheckArray(oPos, "o");
+    console.log(gridConstructor(gridBy));
+    turn ++;
+    playerOneTurn();
 }
 
+//This array is just for display purposes
 function populateArray(number) {
     //Push the number of positions into the array
     for (let i = 0; i<(number)*(number); i ++) {
@@ -118,6 +156,7 @@ function populateArray(number) {
     }
 }
 
+//Created this array for performing checking algorithms
 function populateCheckArray(number) {
     for (let i = 0; i < number; i++) {
         var tempArray = [];
@@ -230,6 +269,8 @@ function checkDiagonalWin(player, array) {
     var superString = "";
     var regularExp = false;
 
+    //This takes the 45 degrees to the right arrays
+    //For the bigger half of a triangle
     for (let i = 0; i < gridBy; i++) {
         var tempArray = [];
         for (let j = 0; j <= i; j++) {
@@ -237,6 +278,8 @@ function checkDiagonalWin(player, array) {
         }
         cdwArray.push(tempArray);
     }
+
+    //This takes the lower half
     for (let i = 1; i < gridBy; i ++) {
         var tempArray = [];
         let k = i;
@@ -246,10 +289,13 @@ function checkDiagonalWin(player, array) {
         }
         cdwArray.push(tempArray);
     }
+
+    //This joins the arrays like the horizontal check
     for (let i = 0; i < cdwArray.length; i ++) {
         var tempArray = cdwArray[i].join("");
         newArray.push(tempArray);
     }
+
     superString = newArray.join("n");
     regularExp = /(x{3,3})|(o{3,3})/.test(superString);
 
@@ -258,6 +304,8 @@ function checkDiagonalWin(player, array) {
     }
 }
 
+//This flips the values as if by 90 degrees to the right
+//Then checks for diagonal win
 function checkOtherDiagonalWin(player) {
     var codwArray = [];
 
